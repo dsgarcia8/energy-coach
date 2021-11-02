@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "859413645242",
+    "project_id": "energy-coach",
+    "storage_bucket": "energy-coach.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859413645242:android:5414be96e32e5d3c3cff83",
+        "android_client_info": {
+          "package_name": "com.energy.coach"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "859413645242-utegjunih7h4vtl2rm7u268q313tfjen.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtK8wPRF7IMt7aKKQSxprX7Mv-oTdMfg4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "859413645242-utegjunih7h4vtl2rm7u268q313tfjen.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
