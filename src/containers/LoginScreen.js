@@ -1,7 +1,11 @@
 import React, {useState, useEffect, useContext} from 'react';
+// import * as React from 'react';
 import {Alert, Button, Text, TextInput, View} from 'react-native';
-import auth from '@react-native-firebase/auth';
+import auth, {firebase} from '@react-native-firebase/auth';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {AuthContext} from '../utils/AuthContext';
+import FormButton from '../components/FormButton';
 
 const LoginScreen = () => {
   const {currentUser} = useContext(AuthContext);
@@ -27,9 +31,10 @@ const LoginScreen = () => {
           alignItems: 'center',
           width: '100%',
           height: '100%',
+          backgroundColor: '#FFFFFF',
         }}>
-        <Text>Login Screen</Text>
-        <View style={{padding: 2}}>
+        <Text>Email</Text>
+        <View style={{padding: 2, width: '50%', fontFamily: 'Lato-Regular'}}>
           <TextInput
             placeholder={'Username'}
             value={userName}
@@ -37,28 +42,47 @@ const LoginScreen = () => {
             style={{borderColor: 'grey', borderWidth: 1}}
           />
         </View>
-        <View style={{padding: 2}}>
+        <Text style={{justifyContent: 'flex-start'}}>Password</Text>
+        <View style={{padding: 2, width: '50%'}}>
           <TextInput
             placeholder={'Password'}
             value={password}
+            secureTextEntry={true}
             onChangeText={password => setPassword(password)}
-            style={{borderColor: 'grey', borderWidth: 1}}/>
+            style={{borderColor: 'grey', borderWidth: 1}}
+          />
         </View>
-        <Button
-          title="Log in"
+        <FormButton
+          buttonTitle="Sign In"
           onPress={() => {
             // TODO: Validar que los campos esten llenos
             // TODO: Autenticacion
             __doSingIn(userName, password);
           }}
         />
+        {/*<Button*/}
+        {/*  title="Log in"*/}
+        {/*  onPress={() => {*/}
+        {/*    // TODO: Validar que los campos esten llenos*/}
+        {/*    // TODO: Autenticacion*/}
+        {/*    __doSingIn(userName, password);*/}
+        {/*  }}*/}
+        {/*/>*/}
       </View>
     );
   }
 
   return (
     <View>
-      <Text>Welcome {currentUser.email}</Text>
+      <Text>Welcome hgdhgd {currentUser.email}</Text>
+      <Button
+        title="Log out"
+        onPress={async () => {
+          // TODO: Validar que los campos esten llenos
+          // TODO: Autenticacion
+          await firebase.auth().signOut();
+        }}
+      />
     </View>
   );
 };
