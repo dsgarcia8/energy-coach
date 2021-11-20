@@ -8,7 +8,7 @@ import HomeScreen from './containers/HomeScreen';
 import ProfileScreen from './containers/ProfileScreen';
 import {AuthContext} from './utils/AuthContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import ReportsScreen from "./containers/ReportsScreen";
+import ReportsScreen from './containers/ReportsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,9 +20,7 @@ const AppTab = () => (
         let iconName;
 
         if (route.name === 'Home') {
-          iconName = focused
-            ? 'home'
-            : 'home-outline';
+          iconName = focused ? 'home' : 'home-outline';
         } else if (route.name === 'Reports') {
           iconName = focused ? 'stats-chart' : 'stats-chart-outline';
         } else if (route.name === 'Profile') {
@@ -89,7 +87,10 @@ const AppNavigator = () => {
         </>
       ) : (
         <Stack.Navigator>
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen
+            options={{
+              headerShown: false,
+          }} name="Login" component={LoginScreen} />
         </Stack.Navigator>
       )}
     </>

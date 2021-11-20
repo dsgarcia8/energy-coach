@@ -6,6 +6,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {AuthContext} from '../utils/AuthContext';
 import FormButton from '../components/FormButton';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const LoginScreen = () => {
   const {currentUser} = useContext(AuthContext);
@@ -33,23 +34,55 @@ const LoginScreen = () => {
           height: '100%',
           backgroundColor: '#FFFFFF',
         }}>
-        <Text>Email</Text>
-        <View style={{padding: 2, width: '50%', fontFamily: 'Lato-Regular'}}>
+        {/*<View>*/}
+        {/*  <Text*/}
+        {/*    style={{*/}
+        {/*      fontSize: 25,*/}
+        {/*      fontFamily: 'Lato-Regular',*/}
+        {/*      color: 'green',*/}
+        {/*      fontWeight: 'bold',*/}
+        {/*    }}>*/}
+        {/*    Energy Coach*/}
+        {/*  </Text>*/}
+        {/*</View>*/}
+        <View style={{margin: 20}}>
+          <Ionicons name="leaf-sharp" size={90} color="green" />
+        </View>
+        <View style={{margin: 20, alignItems: 'flex-start'}}>
+          <Text
+            style={{
+              fontSize: 25,
+              fontFamily: 'Lato-Regular',
+              color: 'black',
+              fontWeight: 'bold',
+              textAlign: 'left'
+            }}>
+            Sign In
+          </Text>
+        </View>
+        <Text style={{textAlign: 'left', alignItems: 'flex-start'}}>Email</Text>
+        <View
+          style={{
+            padding: 2,
+            width: '60%',
+            fontFamily: 'Lato-Regular',
+            margin: 10,
+          }}>
           <TextInput
             placeholder={'Username'}
             value={userName}
             onChangeText={userName => setUserName(userName)}
-            style={{borderColor: 'grey', borderWidth: 1}}
+            style={{borderColor: 'grey', borderWidth: 1, borderRadius:5}}
           />
         </View>
-        <Text style={{justifyContent: 'flex-start'}}>Password</Text>
-        <View style={{padding: 2, width: '50%'}}>
+        <Text style={{textAlign: 'left'}}>Password</Text>
+        <View style={{padding: 2, width: '60%', margin: 10}}>
           <TextInput
             placeholder={'Password'}
             value={password}
             secureTextEntry={true}
             onChangeText={password => setPassword(password)}
-            style={{borderColor: 'grey', borderWidth: 1}}
+            style={{borderColor: 'grey', borderWidth: 1, borderRadius:5}}
           />
         </View>
         <FormButton

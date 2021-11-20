@@ -1,6 +1,45 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Alert, Button, Text, TextInput, View} from 'react-native';
-import auth, {firebase} from '@react-native-firebase/auth';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import firestore from '@react-native-firebase/firestore';
+
+const temp_in = 0;
+let temp_ac = 0;
+
+//intento 1
+firestore()
+  .collection('metrics')
+  .doc('MTgkDoUl5lekx1SDCAZs')
+  .get()
+  .then( documentSnapshot => {
+    console.log('User exists: ', documentSnapshot.exists);
+    if (documentSnapshot.exists) {
+      temp_ac = documentSnapshot.data().temp_ac;
+    }
+  });
+console.log(temp_ac);
+
+//intento 2
+// const user = firestore()
+//   .collection('metrics')
+//   .doc('MTgkDoUl5lekx1SDCAZs')
+//   .get();
+
+//intento 3
+// eslint-disable-next-line react-hooks/rules-of-hooks
+// let temp_ac2 = useState(0)
+// // eslint-disable-next-line react-hooks/rules-of-hooks
+// useEffect(() => {
+//   //load hospitals into hospitalsList
+//   // const hospitals = []
+//   firestore()
+//     .collection('metrics')
+//     .doc('MTgkDoUl5lekx1SDCAZs')
+//     .get()
+//     .then(documentsnapshot => {
+//       temp_ac2 = documentsnapshot.data();
+//     });
+// });
 
 const HomeScreen = () => {
   return (
@@ -52,15 +91,14 @@ const HomeScreen = () => {
           style={{
             justifyContent: 'center',
             alignItems: 'center',
-            margin: 20,
+            margin: 10,
             paddingBottom: 10,
             borderBottomWidth: 2,
             borderBottomColor: '#52ADEB',
           }}>
-          <Text>Temperatura actual del AC</Text>
-          <Text style={{fontSize: 30, padding: 10, color: '#295675'}}>
-            19ºC
-          </Text>
+          <Text style={{margin: 5}}>Temperatura actual del AC</Text>
+          <Ionicons name="snow-outline" size={30} color="#52ADEB" />
+          <Text style={{fontSize: 30, padding: 10, color: '#295675'}}>19ºC</Text>
         </View>
         <View
           style={{
