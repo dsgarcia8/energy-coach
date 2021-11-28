@@ -36,6 +36,8 @@ const ProfileScreen = () => {
             <Text style={styles.description}>
               Esta app permite tomar decisiones para incrementar el ahorro energético en tu edificio sin afectar tu confort!
             </Text>
+            <Text style={styles.description}>Edificio: 11C</Text>
+            <Text style={styles.description}>Sala: Laboratorio de Sistemas Telemáticos</Text>
             <FormButton
               buttonTitle="Log Out"
               onPress={async () => {

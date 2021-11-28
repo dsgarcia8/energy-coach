@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Alert, Button, Text, TextInput, View} from 'react-native';
+import {Alert, Button, Text, TextInput, View, StyleSheet} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FormButton from '../components/FormButton';
 import {firebase} from '@react-native-firebase/database';
@@ -116,20 +116,90 @@ const HomeScreen = () => {
           <Text style={{}}>Ahorro Energético esperado</Text>
           <Text style={{fontSize: 30, padding: 10, color: '#295675'}}>8%</Text>
         </View>
-      </View>
-      <View>
-        <View style={{width: 300, alignItems: 'center'}}>
-          <FormButton
-            buttonTitle="Aceptar"
-            onPress={() => {
-              setControl().then(r => console.log('yeah'));
-              console.log('hey');
-            }}
-          />
+        <View style={styles.container}>
+          <View style={styles.buttonContainer}>
+            <FormButton
+              buttonTitle="Aceptar"
+              onPress={() => {
+                setControl().then(r => console.log('se envió control'));
+              }}
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            <FormButton
+              buttonTitle="Rechazar"
+              onPress={() => {
+                console.log('hey');
+              }}
+            />
+          </View>
         </View>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '125%',
+    alignSelf: 'flex-start',
+    marginTop: 60,
+  },
+  buttonContainer: {
+    flex: 1,
+  },
+});
+{
+  /*        </View>*/
+}
+{
+  /*      </View>*/
+}
+{
+  /*      <View>*/
+}
+{
+  /*        <View style={{width: 300, alignItems: 'center'}}>*/
+}
+{
+  /*          <FormButton*/
+}
+{
+  /*            buttonTitle="Aceptar"*/
+}
+{
+  /*            onPress={() => {*/
+}
+{
+  /*              setControl().then(r => console.log('yeah'));*/
+}
+{
+  /*              console.log('hey');*/
+}
+{
+  /*            }}*/
+}
+{
+  /*          />*/
+}
+{
+  /*        </View>*/
+}
+{
+  /*      </View>*/
+}
+{
+  /*    </View>*/
+}
+{
+  /*  );*/
+}
+{
+  /*};*/
+}
 
 export default HomeScreen;

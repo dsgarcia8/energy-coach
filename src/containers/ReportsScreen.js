@@ -6,7 +6,7 @@ import {Dimensions} from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 
-const ProfileScreen = () => {
+const ReportScreen = () => {
   const [labelsArray, setLabelsArray] = useState([]);
   const [dataArray, setDataArray] = useState([]);
   var db = firestore();
@@ -56,11 +56,11 @@ const ProfileScreen = () => {
 
   const chartConfig = {
     backgroundColor: '#e26a00',
-    backgroundGradientFrom: '#fb8c00',
-    backgroundGradientTo: '#ffa726',
+    backgroundGradientFrom: '#ffff',
+    backgroundGradientTo: '#ffff',
     backgroundGradientToOpacity: 0.5,
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
     strokeWidth: 2, // optional, default 3
     barPercentage: 0.5,
     useShadowColorFromDataset: false, // optional
@@ -79,23 +79,41 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View>
+    <View style={{backgroundColor:'#ffff',width: '100%',
+      height: '100%'}}>
       <Text
         style={{
-          padding: 20,
+          padding: 35,
           justifyContent: 'center',
           alignItems: 'center',
           textAlign: 'center',
           width: '90%',
-          height: '15%',
+          fontWeight: 'bold',
+          height: '13%',
           borderWidth: 5,
           borderColor: '#52ADEB',
           borderRadius: 15,
           margin: 20,
+          fontSize:16
         }}>
         Tabla de Consumo
       </Text>
       <LineChart
+        style={{backgroundColor:'#ffff'}}
+        data={data}
+        width={screenWidth} // from react-native
+        height={220}
+        yAxisSuffix=" Kw"
+        yAxisInterval={1} // optional, defaults to 1
+        chartConfig={chartConfig}
+        bezier
+        style={{
+          marginVertical: 0,
+          borderRadius: 10,
+        }}
+      />
+      <LineChart
+        style={{backgroundColor:'#ffff'}}
         data={data}
         width={screenWidth} // from react-native
         height={220}
@@ -112,4 +130,4 @@ const ProfileScreen = () => {
   );
 };
 
-export default ProfileScreen;
+export default ReportScreen;
