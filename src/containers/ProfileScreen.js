@@ -31,11 +31,10 @@ const ProfileScreen = () => {
         />
         <View style={styles.body}>
           <View style={styles.bodyContent}>
-            <Text style={styles.name}>John Doe</Text>
+            <Text style={styles.name}>Eduardo Nicolalde</Text>
             <Text style={styles.info}>Administrador</Text>
             <Text style={styles.description}>
-              Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum
-              electram expetendis, omittam deseruisse consequuntur ius an,
+              Esta app permite tomar decisiones para incrementar el ahorro energético en tu edificio sin afectar tu confort!
             </Text>
             <FormButton
               buttonTitle="Log Out"

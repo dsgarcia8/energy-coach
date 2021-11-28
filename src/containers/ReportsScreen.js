@@ -70,7 +70,7 @@ const ProfileScreen = () => {
     labels: labelsArray,
     datasets: [
       {
-        data: dataArray,
+        data: [1,2,3,4,5,6,7],
         color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
         strokeWidth: 2, // optional
       },

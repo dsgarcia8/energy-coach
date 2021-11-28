@@ -1,47 +1,38 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Alert, Button, Text, TextInput, View} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import FormButton from '../components/FormButton';
+import {firebase} from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 
-const temp_in = 0;
-let temp_ac = 0;
-
-//intento 1
-firestore()
-  .collection('metrics')
-  .doc('MTgkDoUl5lekx1SDCAZs')
-  .get()
-  .then( documentSnapshot => {
-    console.log('User exists: ', documentSnapshot.exists);
-    if (documentSnapshot.exists) {
-      temp_ac = documentSnapshot.data().temp_ac;
-    }
-  });
-console.log(temp_ac);
-
-//intento 2
-// const user = firestore()
-//   .collection('metrics')
-//   .doc('MTgkDoUl5lekx1SDCAZs')
-//   .get();
-
-//intento 3
-// eslint-disable-next-line react-hooks/rules-of-hooks
-// let temp_ac2 = useState(0)
-// // eslint-disable-next-line react-hooks/rules-of-hooks
-// useEffect(() => {
-//   //load hospitals into hospitalsList
-//   // const hospitals = []
-//   firestore()
-//     .collection('metrics')
-//     .doc('MTgkDoUl5lekx1SDCAZs')
-//     .get()
-//     .then(documentsnapshot => {
-//       temp_ac2 = documentsnapshot.data();
-//     });
-// });
-
 const HomeScreen = () => {
+  const [controlAC, setControlAC] = useState([]);
+  var db = firestore();
+
+  const setControl = async () => {
+    const database = firebase
+      .app()
+      .database('https://energy-coach-default-rtdb.firebaseio.com')
+      .ref('/recomendation')
+      .set({rec: controlAC})
+      .then(() => console.log(controlAC));
+  };
+
+  useEffect(() => {
+    db.collection('recommendations')
+      .orderBy('datetime', 'desc')
+      .limit(1)
+      .onSnapshot(snapshot => {
+        console.log('hey', snapshot.docs);
+        snapshot.docs.map(function (doc) {
+          let item = doc.data();
+          // let option = item.option;
+          setControlAC(item.option);
+          console.log('valor', item.option);
+        });
+      });
+  }, []);
+
   return (
     <View
       style={{
@@ -98,7 +89,9 @@ const HomeScreen = () => {
           }}>
           <Text style={{margin: 5}}>Temperatura actual del AC</Text>
           <Ionicons name="snow-outline" size={30} color="#52ADEB" />
-          <Text style={{fontSize: 30, padding: 10, color: '#295675'}}>19ºC</Text>
+          <Text style={{fontSize: 30, padding: 10, color: '#295675'}}>
+            19ºC
+          </Text>
         </View>
         <View
           style={{
@@ -122,6 +115,17 @@ const HomeScreen = () => {
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text style={{}}>Ahorro Energético esperado</Text>
           <Text style={{fontSize: 30, padding: 10, color: '#295675'}}>8%</Text>
+        </View>
+      </View>
+      <View>
+        <View style={{width: 300, alignItems: 'center'}}>
+          <FormButton
+            buttonTitle="Aceptar"
+            onPress={() => {
+              setControl().then(r => console.log('yeah'));
+              console.log('hey');
+            }}
+          />
         </View>
       </View>
     </View>
