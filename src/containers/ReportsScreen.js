@@ -10,20 +10,51 @@ const ReportScreen = () => {
   const [labelsArray, setLabelsArray] = useState([]);
   const [dataArray, setDataArray] = useState([]);
   var db = firestore();
+  const [dict, setDict] = useState({});
+  const [dictShelly, setDictShelly] = useState({});
+
   // console.log('->', labelsArray, dataArray);
+  useEffect(() => {
+    db.collection('shellyData')
+      .orderBy('datetime', 'desc')
+      .limit(48)
+      .get()
+      .then(function (querySnapshot) {
+        const dictInterno = {};
+        querySnapshot.docs.map(function (doc) {
+          let item = doc.data();
+          let consumo = item.consumption;
+          let date = item.datetime.toDate().getHours();
+          if (date in dictInterno) {
+            dictInterno[date] = dictInterno[date] + consumo;
+          } else {
+            dictInterno[date] = consumo;
+          }
+        });
+        setDictShelly(dictInterno);
+      });
+  }, []);
+
   useEffect(() => {
     db.collection('sensor_data')
       .orderBy('datetime', 'desc')
-      .limit(7)
+      .limit(48)
       .get()
       .then(function (querySnapshot) {
         const ArrayInterno1 = [];
         const ArrayInterno2 = [];
+        const dictInterno = {};
         querySnapshot.docs.map(function (doc) {
           let item = doc.data();
           let consumo = item.consumption;
           ArrayInterno1.push(consumo);
           let date = item.datetime.toDate().getHours();
+
+          if (date in dictInterno) {
+            dictInterno[date] = dictInterno[date] + consumo;
+          } else {
+            dictInterno[date] = consumo;
+          }
           // switch (date) {
           //   case 0:
           //     date = 'Domingo';
@@ -48,12 +79,17 @@ const ReportScreen = () => {
           //     break;
           // }
           ArrayInterno2.push(date);
+          // console.log(dictInterno, 'dictInterno');
         });
+
         setLabelsArray(ArrayInterno2.reverse());
         setDataArray(ArrayInterno1);
+        // console.log(dictInterno);
+        setDict(dictInterno);
       });
   }, []);
-
+  console.log(dict, 'hols');
+  console.log(dictShelly, 'shelly');
   const chartConfig = {
     backgroundColor: '#e26a00',
     backgroundGradientFrom: '#ffff',
@@ -67,10 +103,26 @@ const ReportScreen = () => {
   };
 
   const data = {
-    labels: labelsArray,
+    //labels: labelsArray,
+    labels: Object.keys(dict),
     datasets: [
       {
-        data: [1,2,3,4,5,6,7],
+        //data: [1,2,3,4,5,6,7],
+        data: Object.values(dict),
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
+        strokeWidth: 2, // optional
+      },
+    ],
+    legend: ['Consumption'], // optional
+  };
+
+  const dataShelly = {
+    //labels: labelsArray,
+    labels: Object.keys(dictShelly),
+    datasets: [
+      {
+        //data: [1,2,3,4,5,6,7],
+        data: Object.values(dictShelly),
         color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
         strokeWidth: 2, // optional
       },
@@ -79,53 +131,79 @@ const ReportScreen = () => {
   };
 
   return (
-    <View style={{backgroundColor:'#ffff',width: '100%',
-      height: '100%'}}>
+    <View
+      style={{
+        backgroundColor: '#ffff',
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
       <Text
         style={{
-          padding: 35,
+          padding: 25,
           justifyContent: 'center',
           alignItems: 'center',
           textAlign: 'center',
           width: '90%',
           fontWeight: 'bold',
-          height: '13%',
-          borderWidth: 5,
+          height: '10%',
+          borderWidth: 2,
           borderColor: '#52ADEB',
           borderRadius: 15,
-          margin: 20,
-          fontSize:16
+          margin: 10,
+          fontSize: 16,
         }}>
-        Tabla de Consumo
+        Tabla de Consumo en edificio
       </Text>
-      <LineChart
-        style={{backgroundColor:'#ffff'}}
-        data={data}
-        width={screenWidth} // from react-native
-        height={220}
-        yAxisSuffix=" Kw"
-        yAxisInterval={1} // optional, defaults to 1
-        chartConfig={chartConfig}
-        bezier
+      {data.datasets[0].data.length > 0 && (
+        <LineChart
+          data={data}
+          width={screenWidth} // from react-native
+          height={220}
+          yAxisSuffix=" Kw"
+          yAxisInterval={1} // optional, defaults to 1
+          chartConfig={chartConfig}
+          bezier
+          style={{
+            marginVertical: 0,
+            borderRadius: 10,
+          }}
+        />
+      )}
+      <Text
         style={{
-          marginVertical: 0,
-          borderRadius: 10,
-        }}
-      />
-      <LineChart
-        style={{backgroundColor:'#ffff'}}
-        data={data}
-        width={screenWidth} // from react-native
-        height={220}
-        yAxisSuffix=" Kw"
-        yAxisInterval={1} // optional, defaults to 1
-        chartConfig={chartConfig}
-        bezier
-        style={{
-          marginVertical: 0,
-          borderRadius: 10,
-        }}
-      />
+          padding: 25,
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          width: '90%',
+          fontWeight: 'bold',
+          height: '10%',
+          borderWidth: 2,
+          borderColor: '#52ADEB',
+          borderRadius: 15,
+          margin: 10,
+          fontSize: 16,
+        }}>
+        Tabla de Consumo de AC
+      </Text>
+      {dataShelly.datasets[0].data.length > 0 && (
+        <LineChart
+          style={{backgroundColor: '#ffff'}}
+          data={dataShelly}
+          width={screenWidth} // from react-native
+          height={220}
+          yAxisSuffix=" Kw"
+          yAxisInterval={1} // optional, defaults to 1
+          chartConfig={chartConfig}
+          bezier
+          style={{
+            marginVertical: 0,
+            borderRadius: 10,
+          }}
+        />
+      )}
     </View>
   );
 };
