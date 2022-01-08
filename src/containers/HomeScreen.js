@@ -1,23 +1,22 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {
-  Alert,
-  Button,
-  Text,
-  TextInput,
-  View,
-  Modal,
-  Pressable,
-  StyleSheet,
-} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Text, View, Modal, Button, StyleSheet, Dimensions, TouchableHighlight} from "react-native";
 import FormButton from '../components/FormButton';
+import {Slider, Icon} from 'react-native-elements';
 import {firebase} from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
-var db = firestore();
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { windowHeight } from "../utils/Dimensions";
 
-const HomeScreen = () => {
+var db = firestore();
+const screenWidth = Dimensions.get('window').width;
+type SlidersComponentProps = {};
+
+const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
   const [controlAC, setControlAC] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [value, setValue] = useState(0);
+
+  const left = ((value - 16) * (screenWidth - 21)) / 9;
 
   const setControl = async () => {
     const database = firebase
@@ -73,21 +72,11 @@ const HomeScreen = () => {
   return (
     <View
       style={{
-        // justifyContent: 'center',
-        // alignItems: 'center',
         width: '100%',
         height: '100%',
         backgroundColor: '#FFFFFF',
       }}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        // onRequestClose={() => {
-        //   Alert.alert('Modal has been closed.');
-        //   setModalVisible(!modalVisible);
-        // }}
-      >
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View>
@@ -126,21 +115,6 @@ const HomeScreen = () => {
                 borderRadius: 10,
                 margin: 20,
               }}>
-              {/*<View*/}
-              {/*  style={{*/}
-              {/*    justifyContent: 'center',*/}
-              {/*    alignItems: 'center',*/}
-              {/*    margin: 5,*/}
-              {/*    paddingBottom: 10,*/}
-              {/*    borderBottomWidth: 2,*/}
-              {/*    borderBottomColor: '#52ADEB',*/}
-              {/*  }}>*/}
-              {/*  /!*<Text style={{margin: 5}}>Temperatura actual del AC</Text>*!/*/}
-              {/*  /!*<Ionicons name="snow-outline" size={30} color="#52ADEB" />*!/*/}
-              {/*  /!*<Text style={{fontSize: 30, padding: 10, color: '#295675'}}>*!/*/}
-              {/*  /!*  19ºC*!/*/}
-              {/*  /!*</Text>*!/*/}
-              {/*</View>*/}
               <View
                 style={{
                   flexDirection: 'row',
@@ -194,15 +168,88 @@ const HomeScreen = () => {
                 </View>
               </View>
             </View>
-            {/*<Text style={styles.modalText}>Hello World!</Text>*/}
-            {/*<Pressable*/}
-            {/*  style={[styles.button, styles.buttonClose]}*/}
-            {/*  onPress={() => setModalVisible(!modalVisible)}>*/}
-            {/*  <Text style={styles.textStyle}>Hide Modal</Text>*/}
-            {/*</Pressable>*/}
           </View>
         </View>
       </Modal>
+      <>
+        <View
+          style={{
+            width: '100%',
+            height: '75%',
+            backgroundColor: '#FFFFFF',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View style={{marginTop: 100}}>
+            <Ionicons name="snow-sharp" size={200} color="#2faeea" />
+            <Text style={{paddingTop: 20, fontWeight: 'bold', fontSize: 20, textAlign:'center',color:'black'}}>
+                     Temp :
+            </Text>
+            <Text style={{paddingTop: 20, fontWeight: 'bold', fontSize: 40, textAlign:'center', color:'black'}}>
+              {value}ºC
+            </Text>
+          </View>
+
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItem: 'center',
+              justifyContent: 'center',
+              height: '10%',
+              marginTop: 60,
+            }}>
+            <TouchableHighlight onPress={() => console.log('ON')} underlayColor='transparent' activeOpacity={0}>
+              <View style={{flex: 1, height:50, marginRight:50}}>
+                <Ionicons
+                  name="radio-button-on-sharp"
+                  size={80}
+                  color="#2faeea"
+                />
+                <Text style={{fontWeight: 'bold', color: 'black', textAlign:'center'}}>ON</Text>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={() => console.log('OFF')} underlayColor='transparent' activeOpacity={0}>
+              <View style={{flex: 1}}>
+                <Ionicons
+                  name="radio-button-off-sharp"
+                  size={80}
+                  color="#2faeea"
+                />
+                <Text style={{fontWeight:'bold', color:'black', textAlign:'center'}}>OFF</Text>
+              </View>
+            </TouchableHighlight>
+          </View>
+        </View>
+        <View style={[styles.contentView]}>
+          <Text style={{width: 20, textAlign: 'center', left: left, color:'black', paddingBottom:5, fontWeight:'bold'}}>
+            {value}
+          </Text>
+          <Slider
+            value={value}
+            onValueChange={setValue}
+            maximumValue={24}
+            minimumValue={16}
+            step={1}
+            onSlidingComplete={(value) => console.log('tempSlider', value)}
+            allowTouchTrack
+            trackStyle={{height: 5, backgroundColor: 'transparent'}}
+            thumbStyle={{height: 20, width: 20, backgroundColor: 'transparent'}}
+            thumbProps={{
+              children: (
+                <Icon
+                  name="circle"
+                  type="font-awesome"
+                  size={20}
+                  reverse
+                  containerStyle={{bottom: 20, right: 20}}
+                  color="#2faeea"
+                />
+              ),
+            }}
+          />
+        </View>
+      </>
     </View>
   );
 };
@@ -241,54 +288,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 22,
   },
+  contentView: {
+    padding: 20,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+  },
+  button: {
+    marginTop: 10,
+    width: '95%',
+    height: windowHeight / 5,
+    backgroundColor: '#32A9E9',
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    fontFamily: 'Lato-Regular',
+  },
 });
-{
-  /*        </View>*/
-}
-{
-  /*      </View>*/
-}
-{
-  /*      <View>*/
-}
-{
-  /*        <View style={{width: 300, alignItems: 'center'}}>*/
-}
-{
-  /*          <FormButton*/
-}
-{
-  /*            buttonTitle="Aceptar"*/
-}
-{
-  /*            onPress={() => {*/
-}
-{
-  /*              setControl().then(r => console.log('yeah'));*/
-}
-{
-  /*              console.log('hey');*/
-}
-{
-  /*            }}*/
-}
-{
-  /*          />*/
-}
-{
-  /*        </View>*/
-}
-{
-  /*      </View>*/
-}
-{
-  /*    </View>*/
-}
-{
-  /*  );*/
-}
-{
-  /*};*/
-}
 
 export default HomeScreen;
