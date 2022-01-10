@@ -1,11 +1,19 @@
 import React, {useState, useEffect, useContext} from 'react';
-import { Text, View, Modal, Button, StyleSheet, Dimensions, TouchableHighlight} from "react-native";
+import {
+  Text,
+  View,
+  Modal,
+  Button,
+  StyleSheet,
+  Dimensions,
+  TouchableHighlight,
+} from 'react-native';
 import FormButton from '../components/FormButton';
 import {Slider, Icon} from 'react-native-elements';
 import {firebase} from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { windowHeight } from "../utils/Dimensions";
+import {windowHeight} from '../utils/Dimensions';
 
 var db = firestore();
 const screenWidth = Dimensions.get('window').width;
@@ -15,17 +23,37 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
   const [controlAC, setControlAC] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [value, setValue] = useState(0);
+  const [temperature, setTemperature] = useState(0);
 
   const left = ((value - 16) * (screenWidth - 21)) / 9;
 
-  const setControl = async () => {
+  const setControl = async ac_value => {
     const database = firebase
       .app()
       .database('https://energy-coach-default-rtdb.firebaseio.com')
       .ref('/recomendation')
-      .set({rec: controlAC})
-      .then(() => console.log(controlAC));
+      .set({rec: ac_value ? ac_value : controlAC});
   };
+
+  useEffect(() => {
+    const onValueChange = firebase
+      .app()
+      .database('https://energy-coach-default-rtdb.firebaseio.com')
+      .ref('/recomendation/rec')
+      .on('value', snapshot => {
+        // console.log('Temp: ', snapshot.val());
+        setTemperature(snapshot.val());
+        // console.log('temperatura_guardada', temperature);
+      });
+
+    // Stop listening for updates when no longer required
+    return () =>
+      firebase
+        .app()
+        .database('https://energy-coach-default-rtdb.firebaseio.com')
+        .ref('/recomendation/rec')
+        .off('value', onValueChange);
+  }, []);
 
   useEffect(() => {
     const subscriber = db
@@ -33,17 +61,79 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
       .orderBy('datetime', 'desc')
       .limit(1)
       .onSnapshot(snapshot => {
-        console.log('hey', snapshot.docs);
         snapshot.docs.map(function (doc) {
           let item = doc.data();
           // let option = item.option;
           setControlAC(item.option);
           setModalVisible(true);
-          console.log('valor', item.option);
         });
       });
     return () => subscriber();
   }, []);
+
+  const convertCode = value_to_change => {
+    let changed_value;
+    switch (value_to_change) {
+      case 1:
+        changed_value = 22;
+        break;
+      case 3:
+        changed_value = 16;
+        break;
+      case 4:
+        changed_value = 17;
+        break;
+      case 5:
+        changed_value = 18;
+        break;
+      case 6:
+        changed_value = 19;
+        break;
+      case 7:
+        changed_value = 20;
+        break;
+      case 8:
+        changed_value = 21;
+        break;
+      case 9:
+        changed_value = 22;
+        break;
+      case 10:
+        changed_value = 23;
+        break;
+      case 11:
+        changed_value = 24;
+        break;
+      case 24:
+        changed_value = 11;
+        break;
+      case 23:
+        changed_value = 10;
+        break;
+      case 22:
+        changed_value = 9;
+        break;
+      case 21:
+        changed_value = 8;
+        break;
+      case 20:
+        changed_value = 7;
+        break;
+      case 19:
+        changed_value = 6;
+        break;
+      case 18:
+        changed_value = 5;
+        break;
+      case 17:
+        changed_value = 4;
+        break;
+      case 16:
+        changed_value = 3;
+        break;
+    }
+    return changed_value;
+  };
 
   let recommendation = '';
   let energy_saving = '';
@@ -57,18 +147,47 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
       energy_saving = '10%';
       break;
     case 3:
-      recommendation = 'Subir temperatura del AC';
+      recommendation = 'Cambiar temperatura a 16º';
       energy_saving = '5%';
       break;
     case 4:
-      recommendation = 'Bajar temperatura del AC';
+      recommendation = 'Cambiar temperatura a 17º';
       energy_saving = '0%';
       break;
     case 5:
-      recommendation = 'Mantener el estado';
+      recommendation = 'Cambiar temperatura a 18º';
+      energy_saving = '0%';
+      break;
+    case 6:
+      recommendation = 'Cambiar temperatura a 19º';
+      energy_saving = '0%';
+      break;
+    case 7:
+      recommendation = 'Cambiar temperatura a 20º';
+      energy_saving = '0%';
+      break;
+    case 8:
+      recommendation = 'Cambiar temperatura a 21º';
+      energy_saving = '0%';
+      break;
+    case 9:
+      recommendation = 'Cambiar temperatura a 22º';
+      energy_saving = '0%';
+      break;
+    case 10:
+      recommendation = 'Cambiar temperatura a 23º';
+      energy_saving = '0%';
+      break;
+    case 11:
+      recommendation = 'Cambiar temperatura a 24º';
+      energy_saving = '0%';
+      break;
+    case 11:
+      recommendation = 'Mantener estadoº';
       energy_saving = '0%';
       break;
   }
+
   return (
     <View
       style={{
@@ -182,11 +301,28 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
           }}>
           <View style={{marginTop: 100}}>
             <Ionicons name="snow-sharp" size={200} color="#2faeea" />
-            <Text style={{paddingTop: 20, fontWeight: 'bold', fontSize: 20, textAlign:'center',color:'black'}}>
-                     Temp :
+            <Text
+              style={{
+                paddingTop: 20,
+                fontWeight: 'bold',
+                fontSize: 20,
+                textAlign: 'center',
+                color: 'black',
+              }}>
+              Temp:
             </Text>
-            <Text style={{paddingTop: 20, fontWeight: 'bold', fontSize: 40, textAlign:'center', color:'black'}}>
-              {value}ºC
+            <Text
+              style={{
+                paddingTop: 20,
+                fontWeight: 'bold',
+                fontSize: 40,
+                textAlign: 'center',
+                color: 'black',
+              }}>
+              {convertCode(temperature)
+                ? convertCode(temperature) + 'ºC'
+                : 'OFF'}
+              {/*{convertCode(temperature)}ºC ? */}
             </Text>
           </View>
 
@@ -199,30 +335,62 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
               height: '10%',
               marginTop: 60,
             }}>
-            <TouchableHighlight onPress={() => console.log('ON')} underlayColor='transparent' activeOpacity={0}>
-              <View style={{flex: 1, height:50, marginRight:50}}>
+            <TouchableHighlight
+              onPress={() =>
+                setControl(1).then(r => console.log('se encendió AC'))
+              }
+              underlayColor="transparent"
+              activeOpacity={0}>
+              <View style={{flex: 1, height: 50, marginRight: 50}}>
                 <Ionicons
                   name="radio-button-on-sharp"
                   size={80}
                   color="#2faeea"
                 />
-                <Text style={{fontWeight: 'bold', color: 'black', textAlign:'center'}}>ON</Text>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    color: 'black',
+                    textAlign: 'center',
+                  }}>
+                  ON
+                </Text>
               </View>
             </TouchableHighlight>
-            <TouchableHighlight onPress={() => console.log('OFF')} underlayColor='transparent' activeOpacity={0}>
+            <TouchableHighlight
+              onPress={() =>
+                setControl(2).then(r => console.log('se apagó AC'))
+              }
+              underlayColor="transparent"
+              activeOpacity={0}>
               <View style={{flex: 1}}>
                 <Ionicons
                   name="radio-button-off-sharp"
                   size={80}
                   color="#2faeea"
                 />
-                <Text style={{fontWeight:'bold', color:'black', textAlign:'center'}}>OFF</Text>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    color: 'black',
+                    textAlign: 'center',
+                  }}>
+                  OFF
+                </Text>
               </View>
             </TouchableHighlight>
           </View>
         </View>
         <View style={[styles.contentView]}>
-          <Text style={{width: 20, textAlign: 'center', left: left, color:'black', paddingBottom:5, fontWeight:'bold'}}>
+          <Text
+            style={{
+              width: 20,
+              textAlign: 'center',
+              left: left,
+              color: 'black',
+              paddingBottom: 5,
+              fontWeight: 'bold',
+            }}>
             {value}
           </Text>
           <Slider
@@ -231,7 +399,10 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
             maximumValue={24}
             minimumValue={16}
             step={1}
-            onSlidingComplete={(value) => console.log('tempSlider', value)}
+            onSlidingComplete={value => {
+              let codeAC = convertCode(value);
+              setControl(codeAC).then(console.log('se cambió temp a:', value));
+            }}
             allowTouchTrack
             trackStyle={{height: 5, backgroundColor: 'transparent'}}
             thumbStyle={{height: 20, width: 20, backgroundColor: 'transparent'}}
