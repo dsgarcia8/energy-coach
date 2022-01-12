@@ -24,8 +24,9 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [value, setValue] = useState(0);
   const [temperature, setTemperature] = useState(0);
+  const [comfort, setComfort] = useState(0);
 
-  const left = ((value - 16) * (screenWidth - 21)) / 9;
+  const left = ((value - 16) * (screenWidth - 33)) / 9;
 
   const setControl = async ac_value => {
     const database = firebase
@@ -43,6 +44,26 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
       .on('value', snapshot => {
         // console.log('Temp: ', snapshot.val());
         setTemperature(snapshot.val());
+        // console.log('temperatura_guardada', temperature);
+      });
+
+    // Stop listening for updates when no longer required
+    return () =>
+      firebase
+        .app()
+        .database('https://energy-coach-default-rtdb.firebaseio.com')
+        .ref('/recomendation/rec')
+        .off('value', onValueChange);
+  }, []);
+
+  useEffect(() => {
+    const onValueChange = firebase
+      .app()
+      .database('https://energy-coach-default-rtdb.firebaseio.com')
+      .ref('/comfort/value')
+      .on('value', snapshot => {
+        // console.log('Temp: ', snapshot.val());
+        setComfort(snapshot.val());
         // console.log('temperatura_guardada', temperature);
       });
 
@@ -294,13 +315,13 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
         <View
           style={{
             width: '100%',
-            height: '75%',
+            height: '60%',
             backgroundColor: '#FFFFFF',
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <View style={{marginTop: 100}}>
-            <Ionicons name="snow-sharp" size={200} color="#2faeea" />
+          <View style={{marginTop: 50}}>
+            <Ionicons name="snow-sharp" size={150} color="#2faeea" />
             <Text
               style={{
                 paddingTop: 20,
@@ -332,8 +353,8 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
               flexDirection: 'row',
               alignItem: 'center',
               justifyContent: 'center',
-              height: '10%',
-              marginTop: 60,
+              height: 0,
+              marginTop: 30,
             }}>
             <TouchableHighlight
               onPress={() =>
@@ -381,14 +402,18 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
             </TouchableHighlight>
           </View>
         </View>
-        <View style={[styles.contentView]}>
+        <View
+          style={{
+            paddingLeft: 30,
+            paddingRight:30,
+          }}>
           <Text
             style={{
               width: 20,
               textAlign: 'center',
               left: left,
               color: 'black',
-              paddingBottom: 5,
+              paddingBottom: 0,
               fontWeight: 'bold',
             }}>
             {value}
@@ -419,6 +444,76 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
               ),
             }}
           />
+        </View>
+        <View style={{marginTop:20, alignItem: 'center', justifyContent: 'center'}}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              color: 'black',
+              textAlign: 'center',
+              fontSize: 20,
+            }}>
+            Estado de confort: Neutral
+          </Text>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            alignItem: 'center',
+            justifyContent: 'center',
+            margin: 20,
+          }}>
+          <TouchableHighlight
+            onPress={() =>
+              setControl(1).then(r => console.log('se encendió AC'))
+            }
+            underlayColor="transparent"
+            activeOpacity={0}>
+            <View style={{flex: 1, height: 50, margin: 20}}>
+              <Ionicons name="snow-outline" size={80} color="#2faeea" />
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: 'black',
+                  textAlign: 'center',
+                }}>
+                FRIO
+              </Text>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={() => setControl(2).then(r => console.log('se apagó AC'))}
+            underlayColor="transparent"
+            activeOpacity={0}>
+            <View style={{flex: 1, margin: 20}}>
+              <Ionicons name="happy-outline" size={80} color="#D4AC0D" />
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: 'black',
+                  textAlign: 'center',
+                }}>
+                NEUTRAL
+              </Text>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={() => console.log('neutral')}
+            underlayColor="transparent"
+            activeOpacity={0}>
+            <View style={{flex: 1, margin: 20}}>
+              <Ionicons name="flame" size={80} color="#E67E22" />
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: 'black',
+                  textAlign: 'center',
+                }}>
+                CALOR
+              </Text>
+            </View>
+          </TouchableHighlight>
         </View>
       </>
     </View>
