@@ -24,7 +24,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [value, setValue] = useState(0);
   const [temperature, setTemperature] = useState(0);
-  const [comfort, setComfort] = useState(0);
+  const [comfort, setComfort] = useState('');
 
   const left = ((value - 16) * (screenWidth - 33)) / 9;
 
@@ -34,6 +34,14 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
       .database('https://energy-coach-default-rtdb.firebaseio.com')
       .ref('/recomendation')
       .set({rec: ac_value ? ac_value : controlAC});
+  };
+
+  const setUserComfort = async value => {
+    const database = firebase
+      .app()
+      .database('https://energy-coach-default-rtdb.firebaseio.com')
+      .ref('/comfort/value')
+      .set(value);
   };
 
   useEffect(() => {
@@ -56,25 +64,18 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
         .off('value', onValueChange);
   }, []);
 
-  useEffect(() => {
-    const onValueChange = firebase
-      .app()
-      .database('https://energy-coach-default-rtdb.firebaseio.com')
-      .ref('/comfort/value')
-      .on('value', snapshot => {
-        // console.log('Temp: ', snapshot.val());
-        setComfort(snapshot.val());
-        // console.log('temperatura_guardada', temperature);
+  const addComfort = (level, code) => {
+    const current_date = new Date();
+    db.collection('Comfort')
+      .add({
+        comfortLevel: level,
+        comfortCode: code,
+        date: current_date,
+      })
+      .then(() => {
+        console.log('Comfort added!');
       });
-
-    // Stop listening for updates when no longer required
-    return () =>
-      firebase
-        .app()
-        .database('https://energy-coach-default-rtdb.firebaseio.com')
-        .ref('/recomendation/rec')
-        .off('value', onValueChange);
-  }, []);
+  };
 
   useEffect(() => {
     const subscriber = db
@@ -405,7 +406,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
         <View
           style={{
             paddingLeft: 30,
-            paddingRight:30,
+            paddingRight: 30,
           }}>
           <Text
             style={{
@@ -445,7 +446,12 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
             }}
           />
         </View>
-        <View style={{marginTop:20, alignItem: 'center', justifyContent: 'center'}}>
+        <View
+          style={{
+            marginTop: 20,
+            alignItem: 'center',
+            justifyContent: 'center',
+          }}>
           <Text
             style={{
               fontWeight: 'bold',
@@ -453,7 +459,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
               textAlign: 'center',
               fontSize: 20,
             }}>
-            Estado de confort: Neutral
+            Estado de confort: {comfort}
           </Text>
         </View>
         <View
@@ -465,9 +471,10 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
             margin: 20,
           }}>
           <TouchableHighlight
-            onPress={() =>
-              setControl(1).then(r => console.log('se encendió AC'))
-            }
+            onPress={() => {
+              setUserComfort(0).then(setComfort('Frio'));
+              addComfort('Cold', '0');
+            }}
             underlayColor="transparent"
             activeOpacity={0}>
             <View style={{flex: 1, height: 50, margin: 20}}>
@@ -483,7 +490,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
             </View>
           </TouchableHighlight>
           <TouchableHighlight
-            onPress={() => setControl(2).then(r => console.log('se apagó AC'))}
+            onPress={() => setUserComfort(1).then(setComfort('Neutral'))}
             underlayColor="transparent"
             activeOpacity={0}>
             <View style={{flex: 1, margin: 20}}>
@@ -499,7 +506,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
             </View>
           </TouchableHighlight>
           <TouchableHighlight
-            onPress={() => console.log('neutral')}
+            onPress={() => setUserComfort(2).then(setComfort('Calor'))}
             underlayColor="transparent"
             activeOpacity={0}>
             <View style={{flex: 1, margin: 20}}>
