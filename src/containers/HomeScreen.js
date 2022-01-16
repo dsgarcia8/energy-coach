@@ -77,6 +77,15 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
       });
   };
 
+  const aceptedRecommendation = number => {
+    //1 aceptado 0 rechazado
+    const current_date = new Date();
+    db.collection('AcceptedRecommendations').add({
+      accepted: number,
+      date: current_date,
+    });
+  };
+
   useEffect(() => {
     const subscriber = db
       .collection('recommendations')
@@ -87,6 +96,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
           let item = doc.data();
           // let option = item.option;
           setControlAC(item.option);
+          console.log('llego una recomendacion');
           setModalVisible(true);
         });
       });
@@ -296,6 +306,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
                     onPress={() => {
                       setControl().then(r => console.log('se envió control'));
                       setModalVisible(!modalVisible);
+                      aceptedRecommendation(1);
                     }}
                   />
                 </View>
@@ -304,6 +315,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
                     buttonTitle="Rechazar"
                     onPress={() => {
                       setModalVisible(!modalVisible);
+                      aceptedRecommendation(0);
                     }}
                   />
                 </View>
@@ -490,7 +502,10 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
             </View>
           </TouchableHighlight>
           <TouchableHighlight
-            onPress={() => setUserComfort(1).then(setComfort('Neutral'))}
+            onPress={() => {
+              setUserComfort(1).then(setComfort('Neutral'));
+              addComfort('Neutral', '1');
+            }}
             underlayColor="transparent"
             activeOpacity={0}>
             <View style={{flex: 1, margin: 20}}>
@@ -506,7 +521,10 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
             </View>
           </TouchableHighlight>
           <TouchableHighlight
-            onPress={() => setUserComfort(2).then(setComfort('Calor'))}
+            onPress={() => {
+              setUserComfort(2).then(setComfort('Calor'));
+              addComfort('Hot', '2');
+            }}
             underlayColor="transparent"
             activeOpacity={0}>
             <View style={{flex: 1, margin: 20}}>
