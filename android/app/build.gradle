@@ -148,6 +148,12 @@ android {
         }
     }
     signingConfigs {
+        release {
+          storeFile file('my-release-key.keystore')
+          storePassword 'Fiec123'
+          keyAlias 'my-key-alias'
+          keyPassword 'Fiec123'
+        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -170,6 +176,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
 

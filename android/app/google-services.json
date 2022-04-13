@@ -1,33 +1,34 @@
 {
   "project_info": {
-    "project_number": "859413645242",
-    "project_id": "energy-coach",
-    "storage_bucket": "energy-coach.appspot.com"
+    "project_number": "882593638737",
+    "firebase_url": "https://energy-coach-f14be-default-rtdb.firebaseio.com",
+    "project_id": "energy-coach-f14be",
+    "storage_bucket": "energy-coach-f14be.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:859413645242:android:5414be96e32e5d3c3cff83",
+        "mobilesdk_app_id": "1:882593638737:android:ef523d74f5cb024e918b70",
         "android_client_info": {
           "package_name": "com.energy.coach"
         }
       },
       "oauth_client": [
         {
-          "client_id": "859413645242-utegjunih7h4vtl2rm7u268q313tfjen.apps.googleusercontent.com",
+          "client_id": "882593638737-qe7l8843g76kio4iuhoe6o77k05k5b9j.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAtK8wPRF7IMt7aKKQSxprX7Mv-oTdMfg4"
+          "current_key": "AIzaSyAVIyB1IPinCb87Mqz4pgDas9YUCKud1SQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "859413645242-utegjunih7h4vtl2rm7u268q313tfjen.apps.googleusercontent.com",
+              "client_id": "882593638737-qe7l8843g76kio4iuhoe6o77k05k5b9j.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

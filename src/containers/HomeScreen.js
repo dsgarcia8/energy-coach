@@ -20,6 +20,8 @@ const screenWidth = Dimensions.get('window').width;
 type SlidersComponentProps = {};
 
 const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
+  const url_realtime_firebase =
+    'https://energy-coach-f14be-default-rtdb.firebaseio.com';
   const [controlAC, setControlAC] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [value, setValue] = useState(0);
@@ -31,7 +33,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
   const setControl = async ac_value => {
     const database = firebase
       .app()
-      .database('https://energy-coach-default-rtdb.firebaseio.com')
+      .database(url_realtime_firebase)
       .ref('/recomendation')
       .set({rec: ac_value ? ac_value : controlAC});
   };
@@ -39,7 +41,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
   const setUserComfort = async value => {
     const database = firebase
       .app()
-      .database('https://energy-coach-default-rtdb.firebaseio.com')
+      .database(url_realtime_firebase)
       .ref('/comfort/value')
       .set(value);
   };
@@ -47,7 +49,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
   useEffect(() => {
     const onValueChange = firebase
       .app()
-      .database('https://energy-coach-default-rtdb.firebaseio.com')
+      .database(url_realtime_firebase)
       .ref('/recomendation/rec')
       .on('value', snapshot => {
         // console.log('Temp: ', snapshot.val());
@@ -59,7 +61,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
     return () =>
       firebase
         .app()
-        .database('https://energy-coach-default-rtdb.firebaseio.com')
+        .database(url_realtime_firebase)
         .ref('/recomendation/rec')
         .off('value', onValueChange);
   }, []);
@@ -92,6 +94,7 @@ const HomeScreen: React.FunctionComponent<SlidersComponentProps> = () => {
       .orderBy('datetime', 'desc')
       .limit(1)
       .onSnapshot(snapshot => {
+        console.log('snapshot', snapshot);
         snapshot.docs.map(function (doc) {
           let item = doc.data();
           // let option = item.option;
